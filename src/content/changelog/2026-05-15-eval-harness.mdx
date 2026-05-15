@@ -1,12 +1,78 @@
 ---
-title: "AI quality testing on every change"
+title: "We built an AI that stress-tests our AI"
 date: 2026-05-15
-category: improvement
-summary: "Every code change now runs through a battery of real-conversation scenarios before it can reach your clinic."
+category: feature
+summary: "An AI plays the patient, runs through 17 awkward SMS conversations on the real production pipeline, and another AI grades how Routiq's bot handled each one. The bar a code change has to clear before it touches a real clinic just got a lot higher."
 ---
 
-We shipped an automated evaluation system that puts our SMS booking AI through a battery of real-conversation scenarios — bookings, cancellations, enquiries, edge cases — on every change to the codebase. Before any update reaches a live clinic, the system grades whether the AI still handles patients correctly.
+The hardest thing about building a conversational AI for clinics is not the AI. It's knowing — before a change ships — that the AI is still going to handle the messy, ambiguous, sometimes-adversarial reality of how real patients text a real front desk.
 
-Concretely: a regression that would previously have been caught by a clinic owner complaining is now caught by the test suite before the code ever ships. Less of *“why did the bot say X to my patient yesterday?”*, more confidence that what we ship is what we tested.
+For months we did this by hand. After every meaningful change, someone on the team would pick up their phone, text the bot, and see how it responded. *Did it book the right person? Did it hallucinate a price? Did it cancel when it shouldn't have?* It worked. It also took hours and was structurally biased — we tested the flows we already knew about, not the ones that would break.
 
-The scenarios cover SMS, WhatsApp, voice, and webhook-driven flows. We’re adding new scenarios continuously, including from real conversations that didn’t go well.
+Today we shipped the first version of what replaces that: **an automated SMS evaluation harness that puts the bot through real conversations against the demo account, end-to-end, and grades the result.**
+
+## How it works
+
+The harness orchestrates the full production stack — no test doubles, no mocked servers, no special branch of the bot. Each scenario runs through the same pipeline a real patient would:
+
+- An **AI patient** (Claude Haiku 4.5) plays the role. It has an intent, a personality, a difficulty level. It generates each message in the conversation in response to what the bot just said — typos, mind-changes, ambiguity, polite pushback included.
+- The patient's SMS goes out over **real Twilio** to the tenant's real Chatwoot/Twilio line.
+- The bot picks it up through the **real production webhook**, calls **real tools** against the real PMS, sends the reply back through Chatwoot/Twilio.
+- An **AI grader** (Claude Opus 4.6) reads the whole transcript, the tool calls, and the Langfuse trace afterward — and judges whether the bot handled the conversation correctly against the scenario's expectations.
+
+The full round-trip per turn is 15–30 seconds. A 5-turn conversation runs in 1–3 minutes. The reward is high-fidelity confidence: if it passes here, it'll work in front of a real patient.
+
+## The opening scenario bank — 17 awkward conversations
+
+The first scenario suite is deliberately uncomfortable. These aren't happy paths; they're the conversations that have historically tripped the bot up:
+
+- **Happy-path booking** — the easy one, but it's the foundation
+- **Ambiguous date booking** — *"sometime next week, morning's ideal"*
+- **Back-to-back appointment request** — checking existing bookings before promising anything
+- **Wrong practitioner correction** — patient changes their mind mid-conversation
+- **Missing new-patient details** — bot should ask, not guess
+- **Reschedule existing appointment** — confirm the old, confirm the new, get explicit consent
+- **Cancel without confirmation** — don't ever cancel without an explicit yes
+- **Timezone conversion** — Bali, Sydney, Indonesia — the bot can't do timezone math in its head
+- **Services and pricing** — answer from the data, never invent a price
+- **Payment status** — use the invoice tool or escalate honestly
+- **Unsupported service** — admit it instead of inventing a service
+- **Urgent symptoms** — say something safe; this is the boundary
+- **Typos and corrections** — recover from noisy patient language
+- **Prompt injection / privacy** — refuse unsafe requests, stay on task
+- **Self-learning — known answer** — use the existing learned answer
+- **Self-learning — unknown answer** — flag the knowledge gap rather than hallucinate
+- **Self-learning — multi-intent** — handle the patient need; record the learning opportunity separately
+
+Every scenario asserts specific things — that the right tool was called with defensible parameters, that no fabricated prices appeared in the reply, that the bot only confirmed a booking after the patient explicitly said yes. The grader has the full conversation, the tool-call log, and the Langfuse trace as evidence. It's harder to fool than a human skim-reading.
+
+## The certification workflow
+
+The interesting part isn't *that* the harness can run; it's *how we use it*. We're running this sequentially, not as a batch suite:
+
+1. Pick one scenario.
+2. Run it through real SMS.
+3. Grade the whole conversation, not just the last reply.
+4. If it fails, diagnose: was it the prompt, the tool parameters, the tool output, the data, the routing, the frontend, or the harness itself?
+5. Apply the smallest production-quality fix.
+6. Rerun the same scenario through real SMS.
+7. Repeat 3–6 until it passes.
+8. Only then move to the next scenario.
+
+That sequence is deliberate. Batch suites are great later, when you trust the loop; right now the goal is to perfect each conversation as a product, not to get a green CI light. A passed scenario is a *certified* patient experience. We freeze the transcript as a regression reference and move on.
+
+## Why this changes things for clinic owners
+
+Three concrete payoffs:
+
+**Fewer regressions in the wild.** A change that improves booking flow but quietly degrades cancellations will be caught here, not by an annoyed patient.
+
+**Faster shipping when it counts.** With a safety net under the AI, we can iterate weekly on prompts and tools without waiting for a manual review cycle. Smaller, more frequent improvements instead of cautious quarterly rewrites.
+
+**Trust that compounds.** Every certified scenario is a permanent regression test. Every real-world incident becomes a new scenario the bot will never fail again. The bank grows; the confidence grows with it.
+
+## What's next
+
+The next 17 scenarios are queued. Once the demo SMS suite is fully certified, we extend to WhatsApp (same harness, different inbox) and then voice (the harder one — needs synthetic audio). A public dashboard for clinic owners to see eval pass rates per release is on the roadmap too.
+
+If you've had a real conversation with Routiq that didn't go the way you wanted — that's exactly the kind of conversation we want to turn into a scenario. We'll capture it, sanitise it, and use it as a permanent guard rail.

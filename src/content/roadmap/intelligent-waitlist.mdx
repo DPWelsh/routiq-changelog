@@ -1,0 +1,50 @@
+---
+title: "Intelligent automated waitlist"
+status: next
+summary: "When a slot opens, Routiq automatically offers it to the right waitlisted patients via their preferred channel — and books the first to confirm. No manual chasing."
+updated: 2026-05-15
+order: 6
+---
+
+## The current state
+
+Routiq already has a `AddToWaitlist` tool. If a patient asks for a time that's not available, the AI can offer to put them on the clinic's waitlist. That part works.
+
+What's missing is the other half: **what happens when a slot opens up.** Today, that's still a manual job for the clinic team — pull up the waitlist, decide who to call, ring through the list, hope someone picks up. Most clinics don't do it consistently, which means cancellations leave gaps that never get filled. Pure lost revenue.
+
+## What we're building
+
+When a slot opens — whether through a cancellation, a no-show, or a schedule change — Routiq automatically matches it to waitlisted patients and offers it to them in their preferred channel (WhatsApp, SMS, voice if configured). The first patient to confirm gets booked. Everyone else gets a polite *"someone else grabbed it, you're still on the list"*. No human in the loop.
+
+## Why "intelligent" matters
+
+A dumb waitlist is just FIFO — first in, first offered. That's better than nothing, but it ignores the things that actually predict whether a patient will say yes:
+
+- **Service match**: a patient on the waitlist for *60 min Alister* shouldn't be offered a *15 min online call*.
+- **Practitioner preference**: some patients only see one practitioner. Don't offer them slots with a different practitioner unless they explicitly opted in.
+- **Time-of-day preference**: if their original request was *mornings only*, don't offer them 4pm.
+- **Urgency tier**: an injured patient who said *"sooner is better"* outranks a routine check-up in the same waitlist position.
+- **Probability of booking**: patients who consistently respond to outreach should be tried first; patients who consistently ignore messages shouldn't keep getting the same slot ahead of more engaged ones.
+- **Anti-spam guardrails**: never offer the same patient more than N slots they've already declined; back off if they ask to leave the waitlist.
+
+The agent makes these calls automatically, using the same booking-flow infrastructure that already handles patient verification and Cliniko writes.
+
+## Concurrency — the hard part
+
+When a slot opens, multiple waitlisted patients qualify. We don't want to offer it to all of them and end up with a race condition where three people say yes to the same slot. The system reserves the slot for the offered patient for a short window (default 15 minutes), then moves to the next candidate if no response. If the first patient says yes, the slot is booked and everyone else's offer auto-expires.
+
+## Integration scope
+
+Phase 1: Cliniko end-to-end (cancellation webhook → slot-open event → match → offer → book → confirm).
+
+Phase 2: PracSuite and Nookal parity once the [Multi-PMS Parity](/roadmap/multi-pms-parity) work lands.
+
+## Why this is worth doing now
+
+Two reasons. First, it's pure incremental revenue — every refilled cancellation is money the clinic would have otherwise lost. For a busy clinic with a 5% cancellation rate, that's meaningful at the end of the month. Second, it's the kind of feature that makes the difference between *"Routiq sends my patients messages"* and *"Routiq runs my front desk."* Once a clinic owner sees an automated rebook happen the first time, the product crosses a perception line.
+
+## What we're working through
+
+- The matching logic: deciding how to weight service / practitioner / time / urgency / engagement is a real product-design problem, not just an engineering one. We need to land on defaults that work for most clinics and let the owner tune them.
+- The patient-facing message: too pushy and patients unsubscribe; too tentative and no one books. We'll iterate on tone with eval-harness scenarios.
+- The clinic owner's visibility: owners need to see what the system is doing — how many slots got auto-rebooked, by whom, when. Lands in the [owner dashboard](/roadmap/owner-dashboard) when that ships.

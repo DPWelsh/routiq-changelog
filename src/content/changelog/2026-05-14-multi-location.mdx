@@ -1,0 +1,12 @@
+---
+title: "Multi-location practice support"
+date: 2026-05-14
+category: feature
+summary: "Routiq now handles practices with practitioners across multiple physical sites, including travel buffers between locations."
+---
+
+If your practice runs across more than one site — and especially if your practitioners move between them — Routiq now models that natively. The AI knows which practitioner works at which location on which day, and won’t offer a patient an impossible booking (e.g. Tuesday in Mosman when the practitioner is at Dee Why all day).
+
+For practitioners who do move between sites, the system also respects realistic travel buffers. Back-to-back appointments at different clinics no longer collide; the AI factors in commute time when offering slots.
+
+Behind the scenes this involved a fair amount of work modelling practitioner-location priority lists, recognising same-clinic alternatives over cross-clinic ones, and a few defensive rules for when a patient mentions a practitioner but not a clinic (or vice versa). The end result is straightforward: bookings happen where they actually can happen.

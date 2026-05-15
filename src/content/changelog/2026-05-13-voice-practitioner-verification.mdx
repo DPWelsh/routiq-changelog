@@ -1,0 +1,10 @@
+---
+title: "Voice bookings always go to the right practitioner"
+date: 2026-05-13
+category: fix
+summary: "The voice AI now verifies practitioner identity against your live PMS data before confirming a booking."
+---
+
+A rare but real failure mode: the voice AI could occasionally guess a practitioner ID instead of looking one up. On a call, this could mean the patient was booked with the right human but the appointment was logged against the wrong practitioner ID in Cliniko — invisible to the patient, visible (and annoying) to the clinic team.
+
+We closed this off by requiring the agent to verify practitioner identity against the live availability slot it just offered. No verification, no confirmation. If the practitioner ID doesn’t check out, the AI escalates rather than guessing.

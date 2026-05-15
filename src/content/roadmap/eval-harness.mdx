@@ -1,0 +1,29 @@
+---
+title: "AI Quality Evaluation Harness"
+status: shipped
+summary: "Every code change runs against a battery of real-conversation scenarios before reaching a clinic. Regressions are caught by tests, not by clinic owners."
+updated: 2026-05-15
+order: 1
+---
+
+## Why we built it
+
+As Routiq's AI got more capable, the surface area for subtle regressions grew faster than human review could catch. A prompt tweak intended to improve booking flow could unintentionally degrade enquiries. A new tool could change how the model reasons about availability.
+
+We needed an automated system that could answer, on every change: *did our AI just get better, worse, or neither — across the conversations that actually matter?*
+
+## What shipped
+
+A scenario-based evaluation harness that runs against the live agent stack. Each scenario simulates a real patient conversation — multi-turn, with realistic timing, across SMS, WhatsApp, voice, and webhook flows. An LLM grader then judges whether the AI handled the conversation correctly against the scenario's expected outcome.
+
+The system runs:
+
+- On every relevant commit during development
+- On the deployed agents in production, as a continuous sanity check
+- On a growing library of "things that went wrong before" — every real incident becomes a permanent eval
+
+## Why this changes the trajectory
+
+For clinic owners: more confidence that what we ship is what we tested. Fewer regressions, faster recovery when something does slip.
+
+For us: we can move faster. A safety net under the AI means we can ship improvements weekly instead of monthly.

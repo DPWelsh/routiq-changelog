@@ -1,0 +1,10 @@
+---
+title: "Better judgement on ambiguous voice calls"
+date: 2026-05-13
+category: improvement
+summary: "Refined the rules the voice AI uses to decide between booking, cancelling, rescheduling, and escalating."
+---
+
+Patients on the phone don’t always state their intent cleanly — *“I think I need to move my Tuesday thing”* could be reschedule, could be cancel-and-rebook, could be escalate to a human. We tightened the rule set the voice agent uses to decide, with a clearer preference for asking one short clarifying question over making the wrong call.
+
+The change is small in lines of code, big in real-call outcomes — the AI is less confident in the wrong direction and more confident in the right one. Where it still can’t decide, it now hands off cleanly rather than guessing.

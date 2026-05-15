@@ -1,0 +1,24 @@
+---
+title: "Voice agent for outbound calls"
+status: next
+summary: "Routiq calls patients on the clinic's behalf — confirmations, recall checks, lapsed-patient outreach — in the same voice as your front desk."
+updated: 2026-05-15
+order: 3
+---
+
+## The shape
+
+Routiq's voice agent already handles inbound calls. Outbound is the natural extension: the AI calls patients to confirm appointments, follow up after a session, or re-engage someone who hasn't been in for a while.
+
+The clinic owner sets the rules — who, when, what to say if they pick up, what to do if they don't. The AI does the calling, captures the outcome, updates the patient record.
+
+## What we're working through
+
+This is more product-design work than engineering work. Outbound voice can go wrong fast — patients don't expect a call from an AI, and timing matters. The hard parts are:
+
+- Consent and compliance (the rules differ by region)
+- Voice quality at scale (TTS that doesn't read as robotic)
+- The handoff to a human when the call surfaces something complex
+- Reporting back to the clinic in a way they actually look at
+
+We're moving deliberately. Expect this on the roadmap for a while before it ships.

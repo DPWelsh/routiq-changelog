@@ -1,0 +1,10 @@
+---
+title: "Faster, resumable PracSuite appointment sync"
+date: 2026-05-11
+category: improvement
+summary: "Large practices with tens of thousands of historical appointments now sync incrementally — partial progress survives restarts."
+---
+
+Onboarding a busy PracSuite practice meant syncing appointment history that could run into the tens of thousands of rows. Previously, if the sync was interrupted, we’d effectively start over. For one practice with 90,000+ appointments, that was hours of redo.
+
+The sync now writes incrementally as each page streams in. If the worker restarts (deploy, network blip, anything), it picks up where it left off. Onboarding new PracSuite tenants is no longer a multi-hour cliff.

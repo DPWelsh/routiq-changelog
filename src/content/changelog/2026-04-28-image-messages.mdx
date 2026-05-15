@@ -1,0 +1,10 @@
+---
+title: "Image-only messages handled cleanly"
+date: 2026-04-28
+category: fix
+summary: "When a patient sends a photo without text, the AI now processes it instead of bailing."
+---
+
+Patients sometimes send a photo with no accompanying text — an X-ray, a screenshot of a prescription, a picture of a swollen knee. Previously, an empty-text message could trip up the conversation handler.
+
+Fixed. The AI now treats an image-only message as the message and responds appropriately, whether that’s answering a question about the image or routing it to the right human.

@@ -1,0 +1,10 @@
+---
+title: "No more accidental re-entry into the booking flow"
+date: 2026-04-22
+category: fix
+summary: "After a booking confirms, a follow-up “thanks!” from the patient no longer kicks them back into the booking flow."
+---
+
+Patients are polite — many say *“thanks!”* right after their AI-handled booking confirms. A bug let those messages occasionally re-enter the booking-intent classifier, which would then ask the patient if they wanted to book again.
+
+Fixed by marking the conversation as converted the moment the booking succeeds. Post-booking pleasantries now get a friendly *“you’re welcome — see you then”* instead of a confused re-prompt.

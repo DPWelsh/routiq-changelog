@@ -1,0 +1,21 @@
+---
+title: "Multi-PMS feature parity"
+status: now
+summary: "Every Routiq feature, every clinic — whether they're on Cliniko, PracSuite, or Nookal. One product, three rails underneath."
+updated: 2026-05-15
+order: 2
+---
+
+## The problem
+
+Routiq today supports Cliniko, PracSuite, and Nookal — but not every feature lands on every PMS at the same time. The booking AI shipped on Cliniko first, then PracSuite. The voice agent did the same. We don't want our customers' experience to depend on which practice management system they happen to use.
+
+## What we're building
+
+A PMS-agnostic core: every feature is built once, against a canonical data model, with thin adapters per PMS underneath. When we ship something new, all three PMSes get it on day one.
+
+This is more architectural plumbing than a single feature release. The visible outcome: new clinics on any supported PMS can run on the same Routiq feature set, with no "feature X only works on Cliniko" footnotes.
+
+## Why now
+
+We're approaching the point where the next big initiatives (payments portal, voice for outbound, owner dashboard) need this groundwork in place — otherwise we'll be writing each one three times. Doing it once now saves doing it three times later.

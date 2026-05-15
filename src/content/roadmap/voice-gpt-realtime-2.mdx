@@ -1,0 +1,40 @@
+---
+title: "Voice agent on OpenAI's GPT-Realtime-2"
+status: next
+summary: "Upgrading our voice agent to OpenAI's newest realtime voice model — GPT-5-class reasoning, parallel tool calls, smoother interruption handling, and a 128k-token conversation memory."
+updated: 2026-05-15
+order: 5
+---
+
+## What's changing
+
+[OpenAI shipped a new generation of voice models on May 8, 2026](https://openai.com/index/advancing-voice-intelligence-with-new-models-in-the-api/), led by **GPT-Realtime-2** — their first voice model with GPT-5-class reasoning. We're upgrading Routiq's voice agent to run on it.
+
+## Why this matters for clinic calls
+
+Voice calls into a busy clinic are messier than text. Patients trail off mid-sentence, change their minds, talk over the receptionist, mix two requests into one breath. The current generation of voice AI handles the easy 80% well. The hard 20% — *"actually, can I bring my son to that one too, and could I switch from Tuesday to Thursday?"* — is where models still trip.
+
+GPT-Realtime-2 is built to handle that hard 20% better:
+
+- **GPT-5-class reasoning** means the model can think more carefully about multi-part requests instead of pattern-matching the first thing it heard.
+- **Parallel tool calls** mean the agent can check availability AND look up the patient AND verify the appointment type at the same time — cutting the awkward "let me check that for you" pauses.
+- **128k context window** means the agent remembers everything said in a long call. The patient who said *"I'm allergic to lavender"* at minute 2 won't be forgotten at minute 8.
+- **Better interruption handling** at the model layer, compounding with the [interruption fix](/changelog/2026-05-11-voice-barge-in) we shipped recently.
+- **Adjustable reasoning effort** (normal, high, xhigh) — we can tune how much the model "thinks" per turn based on whether speed or accuracy matters more for that flow.
+
+OpenAI reports a 15.2% improvement on the Big Bench Audio benchmark over the previous generation.
+
+## What you'll notice
+
+In day-to-day clinic operations: fewer of those small, annoying moments where the AI misses something on a phone call. More natural pauses. Faster availability lookups. Better follow-through on complex requests. Same voice, smarter brain.
+
+## What we're working through
+
+The model is in OpenAI's Realtime API now, so the access is unblocked. The work for us is:
+
+1. Side-by-side eval against the current voice agent on real call recordings (with permission) — does GPT-Realtime-2 actually outperform on Routiq's specific workload, or just on generic benchmarks?
+2. Re-tuning the system prompts and tool descriptions — newer models often reward different prompting patterns.
+3. Cost modelling — the new model is more expensive per token, but parallel tool calls and better first-pass accuracy may net out to fewer tokens per call.
+4. Gradual rollout: pilot on a couple of clinics with high call volume, watch the eval-harness scores, then broaden.
+
+If the eval numbers don't beat what we have, we stay on the current model. The point isn't to chase shiny new releases — it's to ship the call experience that actually books more patients.

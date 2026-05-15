@@ -1,0 +1,12 @@
+---
+title: "AI quality testing on every change"
+date: 2026-05-15
+category: improvement
+summary: "Every code change now runs through a battery of real-conversation scenarios before it can reach your clinic."
+---
+
+We shipped an automated evaluation system that puts our SMS booking AI through a battery of real-conversation scenarios — bookings, cancellations, enquiries, edge cases — on every change to the codebase. Before any update reaches a live clinic, the system grades whether the AI still handles patients correctly.
+
+Concretely: a regression that would previously have been caught by a clinic owner complaining is now caught by the test suite before the code ever ships. Less of *“why did the bot say X to my patient yesterday?”*, more confidence that what we ship is what we tested.
+
+The scenarios cover SMS, WhatsApp, voice, and webhook-driven flows. We’re adding new scenarios continuously, including from real conversations that didn’t go well.

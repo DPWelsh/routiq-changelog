@@ -1,0 +1,35 @@
+---
+interface Props {
+  category: 'feature' | 'improvement' | 'fix' | 'docs' | 'announcement';
+}
+
+const { category } = Astro.props;
+
+/*
+ * Routiq brand colors mapped to entry categories.
+ * - feature/announcement: clay (v2 hero accent)
+ * - improvement: prompt (secondary blue accent)
+ * - fix: blackberry tinted (calmer, less alarming than amber)
+ * - docs: muted cloud
+ */
+const styles: Record<Props['category'], string> = {
+  feature:
+    'bg-[color-mix(in_oklch,var(--color-clay)_18%,transparent)] text-[var(--color-clay)] border-[color-mix(in_oklch,var(--color-clay)_45%,transparent)]',
+  improvement:
+    'bg-[color-mix(in_oklch,var(--color-prompt)_15%,transparent)] text-[var(--color-prompt)] border-[color-mix(in_oklch,var(--color-prompt)_45%,transparent)]',
+  fix:
+    'bg-[color-mix(in_oklch,var(--color-blackberry)_55%,transparent)] text-[var(--color-clay)] border-[color-mix(in_oklch,var(--color-clay)_35%,transparent)]',
+  docs:
+    'bg-[color-mix(in_oklch,var(--color-cloud)_8%,transparent)] text-[var(--color-fg-muted)] border-[var(--color-border-strong)]',
+  announcement:
+    'bg-[color-mix(in_oklch,var(--color-clay)_22%,transparent)] text-[var(--color-clay)] border-[var(--color-clay)]',
+};
+---
+<span
+  class:list={[
+    'inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium border tracking-wide uppercase',
+    styles[category],
+  ]}
+>
+  {category}
+</span>

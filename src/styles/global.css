@@ -1,0 +1,215 @@
+@import "tailwindcss";
+
+/*
+ * Routiq brand v2.0 — March 2026
+ * Combination: "01 cloud on core" (cloud text on core background)
+ * Accent: clay (v2 hero, replaced energy red)
+ * Secondary accent: prompt (soft blue)
+ */
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Brand palette */
+  --color-core: #1a1c12;
+  --color-blackberry: #472424;
+  --color-clay: #c98b7a;
+  --color-prompt: #7ba2e0;
+  --color-cloud: #ededeb;
+
+  /* Semantic tokens (mapped from brand) */
+  --color-bg: #1a1c12;
+  --color-bg-elev: #23241a;          /* core, slightly lifted — surface */
+  --color-bg-elev-2: #2d2e22;        /* core, more lifted — code blocks */
+  --color-border: #353629;           /* core, lifted border */
+  --color-border-strong: #4a4b3c;
+  --color-fg: #ededeb;               /* cloud */
+  --color-fg-muted: #a8a9a0;         /* cloud, dimmer */
+  --color-fg-subtle: #6e6f63;        /* cloud, dimmest */
+  --color-accent: #c98b7a;           /* clay */
+  --color-accent-hover: #d9a294;
+  --color-accent-fg: #1a1c12;        /* core, on clay */
+  --color-secondary: #7ba2e0;        /* prompt */
+}
+
+html {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01";
+  font-variation-settings: "opsz" 14;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  min-height: 100vh;
+  font-weight: 400;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+::selection {
+  background: var(--color-clay);
+  color: var(--color-core);
+}
+
+/* Heading-display class — approximates Raptor V3 Black using Inter Black with tight tracking */
+.display {
+  font-family: var(--font-display);
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  line-height: 1.0;
+}
+
+.display-md {
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+/* MDX prose styling */
+.prose-routiq {
+  max-width: 68ch;
+  line-height: 1.7;
+  color: var(--color-fg);
+  font-weight: 400;
+}
+
+.prose-routiq h1 {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 2rem;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.prose-routiq h2 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.5rem;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  margin-top: 3rem;
+  margin-bottom: 0.85rem;
+  padding-top: 2.25rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.prose-routiq h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: -0.018em;
+  margin-top: 2rem;
+  margin-bottom: 0.55rem;
+}
+
+.prose-routiq p,
+.prose-routiq ul,
+.prose-routiq ol {
+  margin-bottom: 1.2rem;
+  color: var(--color-fg);
+}
+
+.prose-routiq ul {
+  list-style: disc;
+  padding-left: 1.5rem;
+}
+
+.prose-routiq ol {
+  list-style: decimal;
+  padding-left: 1.5rem;
+}
+
+.prose-routiq li {
+  margin-bottom: 0.4rem;
+}
+
+.prose-routiq strong {
+  color: var(--color-fg);
+  font-weight: 600;
+}
+
+.prose-routiq a {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in oklch, var(--color-accent) 35%, transparent);
+  text-underline-offset: 3px;
+  transition: text-decoration-color 0.15s ease;
+}
+
+.prose-routiq a:hover {
+  text-decoration-color: var(--color-accent);
+}
+
+.prose-routiq code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background: var(--color-bg-elev);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+  color: var(--color-cloud);
+}
+
+.prose-routiq pre {
+  background: var(--color-bg-elev-2);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 1rem 1.15rem;
+  overflow-x: auto;
+  margin: 1.25rem 0;
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+.prose-routiq pre code {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  font-size: inherit;
+}
+
+.prose-routiq blockquote {
+  border-left: 3px solid var(--color-accent);
+  padding-left: 1rem;
+  color: var(--color-fg-muted);
+  font-style: italic;
+  margin: 1.25rem 0;
+}
+
+.prose-routiq hr {
+  border: 0;
+  border-top: 1px solid var(--color-border);
+  margin: 2.75rem 0;
+}
+
+.prose-routiq table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.25rem 0;
+  font-size: 0.9rem;
+}
+
+.prose-routiq th,
+.prose-routiq td {
+  border: 1px solid var(--color-border);
+  padding: 0.55rem 0.8rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.prose-routiq th {
+  background: var(--color-bg-elev);
+  font-weight: 600;
+  color: var(--color-fg);
+}

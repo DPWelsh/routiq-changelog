@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
+import { getCollection } from 'astro:content';
+
+const entries = await getCollection('roadmap');
+
+const ordered = ['now', 'next', 'later', 'shipped'] as const;
+const grouped = ordered.map(status => ({
+  status,
+  items: entries
+    .filter(e => e.data.status === status)
+    .sort((a, b) => a.data.order - b.data.order),
+}));
+
+const groupHeadings: Record<typeof ordered[number], { title: string; blurb: string }> = {
+  now: { title: 'Now', blurb: 'What we’re actively building.' },
+  next: { title: 'Next', blurb: 'On deck — starting soon.' },
+  later: { title: 'Later', blurb: 'Planned but not yet started.' },
+  shipped: { title: 'Shipped', blurb: 'Done. Live in production.' },
+};
+
+const formatDate = (date: Date) =>
+  date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+---
+<BaseLayout title="Roadmap" description="What Routiq is building next.">
+  <header class="mb-12">
+    <h1 class="display text-5xl sm:text-6xl uppercase">Roadmap</h1>
+    <p class="mt-3 text-[var(--color-fg-muted)] leading-relaxed">
+      What we’re building at Routiq, organised by where it sits in the queue. We update this as plans evolve — dates are intentionally absent because deadlines on a public roadmap age badly.
+    </p>
+  </header>
+
+  <div class="space-y-14">
+    {grouped.map(({ status, items }) => items.length > 0 && (
+      <section>
+        <div class="flex items-baseline justify-between mb-5">
+          <h2 class="display-md text-2xl uppercase">
+            {groupHeadings[status].title}
+          </h2>
+          <StatusBadge status={status} />
+        </div>
+        <p class="text-sm text-[var(--color-fg-muted)] mb-5">{groupHeadings[status].blurb}</p>
+        <ul class="space-y-4">
+          {items.map(item => (
+            <li class="border border-[var(--color-border)] rounded-lg p-5 hover:border-[var(--color-accent)] transition-colors">
+              <a href={`/roadmap/${item.id}`} class="block">
+                <h3 class="text-base font-semibold tracking-tight">
+                  {item.data.title}
+                </h3>
+                <p class="mt-2 text-sm text-[var(--color-fg-muted)] leading-relaxed">
+                  {item.data.summary}
+                </p>
+                <div class="mt-3 text-xs text-[var(--color-fg-subtle)]">
+                  Updated {formatDate(item.data.updated)}
+                </div>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+
+    {grouped.every(g => g.items.length === 0) && (
+      <p class="text-[var(--color-fg-muted)]">Roadmap is being populated. Check back soon.</p>
+    )}
+  </div>
+</BaseLayout>

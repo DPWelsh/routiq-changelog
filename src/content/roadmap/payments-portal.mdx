@@ -1,0 +1,68 @@
+---
+title: "Payments Portal"
+status: now
+summary: "End-to-end payments for clinics — deposits at booking, invoices after the appointment, automated confirmation and reminders in the same messaging channel the patient is already in."
+updated: 2026-05-15
+order: 1
+---
+
+## The problem we’re solving
+
+Most clinics today run their payments through a patchwork: card terminal in the room, bank transfer for follow-ups, manual reconciliation against a Cliniko/PracSuite invoice, and the owner chasing unpaid balances by hand. Patients message *“did you get my payment?”* and the owner has to check their bank app to answer.
+
+That loop is leaky, manual, and invisible. Every step is something Routiq can absorb.
+
+## What we’re building
+
+A complete payments experience that runs inside the messaging channel the patient already uses (WhatsApp, SMS). The clinic owner gets time back; the patient gets a beautiful, modern experience; we close the loop on confirmation automatically.
+
+### Deposits at booking — **already live**
+
+When a patient books an appointment that requires a deposit, Routiq generates a card payment link and the appointment is held until paid. Money flows directly to the clinic’s own Stripe account. We’re a platform; we don’t hold the funds.
+
+### Invoice in the chat — **building now**
+
+After the appointment, the AI can answer *“send me my invoice”* with the actual breakdown — line items, total, how to pay. No human-in-the-loop required.
+
+### Hosted invoice page — **next**
+
+A clinic-branded page the patient opens with one tap. Mobile-first. Shows the bill, the payment options (card via Stripe, or bank transfer details with copy-to-clipboard), and the live status. Replaces the era of emailed PDFs that get lost in spam.
+
+### One-tap card payment — **next**
+
+A “Pay now” button on the invoice page. Patient enters their card details once; payment lands in the clinic’s Stripe account in seconds.
+
+### Closed-loop confirmation — **next**
+
+When payment lands — whether by card or bank transfer — the AI replies in the same chat thread: *“Thanks, payment received.”* No manual reconciliation, no “did you get it?” pings.
+
+### Automated reminders for outstanding — **later**
+
+If an invoice goes unpaid past its due date, the AI gently chases the patient on the clinic’s behalf. Configurable cadence, hard cap on reminders (we will never spam your patients).
+
+### Clinic dashboard — **later**
+
+Outstanding invoices, deposits collected, total revenue this month, payouts. A daily-driver view of the value Routiq is creating for the clinic.
+
+## Why this matters
+
+For clinic owners we talk to, chasing money is the single most-hated task in running the business. Every hour spent on it is an hour not spent treating patients. When we close this loop, we’re not adding a feature — we’re removing a whole class of work from the owner’s week.
+
+For patients, it means no more digging through email for an invoice that was sent three weeks ago. The bill arrives where they already are, in the same thread as their appointment confirmation, and they pay in two taps.
+
+## What’s already shipped
+
+- Stripe Connect destination charges — money flows to clinic’s own Stripe account, not pooled through Routiq
+- Deposits-at-booking flow with auto-create on payment
+- Cliniko & PracSuite integration for invoice data
+- Provider-agnostic abstraction so we can add Square / Tyro / regional providers later
+
+## What we’re not doing (and why)
+
+- **Holding clinic funds in a Routiq account.** That’s a regulated activity (money transmitter). Our Stripe Connect setup means money goes direct to the clinic — they own it from the first second.
+- **Inventing our own payment processor.** We use Stripe in regions where it’s available and let clinics keep their existing payment rails in regions where it isn’t (e.g., bank transfer in Indonesia). The AI delivers the link; the patient pays however they pay.
+- **Replacing the clinic’s accounting system.** Cliniko, PracSuite, Xero, etc. remain the source of truth. We sync to them, we don’t supplant them.
+
+## Have feedback?
+
+We’d love to hear from clinic owners who deal with this pain daily. The shape of this product is being decided now, and one good conversation can change it for the better. [Get in touch](https://routiq.ai).

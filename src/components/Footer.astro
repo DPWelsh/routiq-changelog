@@ -1,0 +1,13 @@
+---
+const year = new Date().getFullYear();
+---
+<footer class="border-t border-[var(--color-border)] mt-16">
+  <div class="mx-auto max-w-3xl px-5 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-sm text-[var(--color-fg-muted)]">
+    <div>&copy; {year} Routiq. All rights reserved.</div>
+    <div class="flex items-center gap-5">
+      <a href="/feed.xml" class="hover:text-[var(--color-fg)] transition-colors">RSS</a>
+      <a href="https://github.com/DPWelsh/routiq-changelog" class="hover:text-[var(--color-fg)] transition-colors">GitHub</a>
+      <a href="https://routiq.ai" class="hover:text-[var(--color-fg)] transition-colors">routiq.ai</a>
+    </div>
+  </div>
+</footer>

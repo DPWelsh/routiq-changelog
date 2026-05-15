@@ -1,0 +1,40 @@
+---
+interface Props {
+  status: 'now' | 'next' | 'later' | 'shipped';
+}
+
+const { status } = Astro.props;
+
+const labels: Record<Props['status'], string> = {
+  now: 'In progress',
+  next: 'Next',
+  later: 'Later',
+  shipped: 'Shipped',
+};
+
+/*
+ * Roadmap statuses mapped to brand colors.
+ * - now: clay (warm, active)
+ * - next: prompt (cool, upcoming)
+ * - later: muted cloud (de-emphasised)
+ * - shipped: prompt with a stronger border (sealed)
+ */
+const styles: Record<Props['status'], string> = {
+  now:
+    'bg-[color-mix(in_oklch,var(--color-clay)_18%,transparent)] text-[var(--color-clay)] border-[color-mix(in_oklch,var(--color-clay)_45%,transparent)]',
+  next:
+    'bg-[color-mix(in_oklch,var(--color-prompt)_15%,transparent)] text-[var(--color-prompt)] border-[color-mix(in_oklch,var(--color-prompt)_45%,transparent)]',
+  later:
+    'bg-[color-mix(in_oklch,var(--color-cloud)_6%,transparent)] text-[var(--color-fg-muted)] border-[var(--color-border-strong)]',
+  shipped:
+    'bg-[color-mix(in_oklch,var(--color-prompt)_18%,transparent)] text-[var(--color-prompt)] border-[var(--color-prompt)]',
+};
+---
+<span
+  class:list={[
+    'inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-medium border tracking-wide uppercase',
+    styles[status],
+  ]}
+>
+  {labels[status]}
+</span>

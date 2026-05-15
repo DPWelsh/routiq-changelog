@@ -1,38 +1,40 @@
 ---
 interface Props {
   status: 'now' | 'next' | 'later' | 'shipped';
+  variant?: 'auto' | 'on-light' | 'on-dark';
 }
 
-const { status } = Astro.props;
+const { status, variant = 'auto' } = Astro.props;
 
 const labels: Record<Props['status'], string> = {
   now: 'In progress',
-  next: 'Next',
-  later: 'Later',
+  next: 'On deck',
+  later: 'Planned',
   shipped: 'Shipped',
 };
 
 /*
- * Roadmap statuses mapped to brand colors.
- * - now: clay (warm, active)
- * - next: prompt (cool, upcoming)
- * - later: muted cloud (de-emphasised)
- * - shipped: prompt with a stronger border (sealed)
+ * V3 palette — no blue. Differentiation via clay + stone tones.
+ * Each spread renders against a different background, so badge styles
+ * adapt: clay for now (warm/active), muted for later, on-dark style for
+ * shipped (which renders inside the blackberry section).
  */
 const styles: Record<Props['status'], string> = {
   now:
-    'bg-[color-mix(in_oklch,var(--color-clay)_18%,transparent)] text-[var(--color-clay)] border-[color-mix(in_oklch,var(--color-clay)_45%,transparent)]',
+    'bg-[var(--color-clay)] text-[var(--color-cream)] border-transparent',
   next:
-    'bg-[color-mix(in_oklch,var(--color-prompt)_15%,transparent)] text-[var(--color-prompt)] border-[color-mix(in_oklch,var(--color-prompt)_45%,transparent)]',
+    'bg-[color-mix(in_oklch,var(--color-clay)_15%,var(--color-cream))] text-[var(--color-clay-deep)] border-[color-mix(in_oklch,var(--color-clay)_40%,transparent)]',
   later:
-    'bg-[color-mix(in_oklch,var(--color-cloud)_6%,transparent)] text-[var(--color-fg-muted)] border-[var(--color-border-strong)]',
+    'bg-transparent text-[var(--color-fg-muted)] border-[var(--color-border-strong)]',
   shipped:
-    'bg-[color-mix(in_oklch,var(--color-prompt)_18%,transparent)] text-[var(--color-prompt)] border-[var(--color-prompt)]',
+    variant === 'on-dark'
+      ? 'bg-transparent text-[var(--color-cream)] border-[color-mix(in_oklch,var(--color-cream)_30%,transparent)]'
+      : 'bg-[var(--color-blackberry)] text-[var(--color-cream)] border-transparent',
 };
 ---
 <span
   class:list={[
-    'inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-medium border tracking-wide uppercase',
+    'inline-flex items-center px-3 py-1 rounded-full text-[11px] font-medium border tracking-wide uppercase',
     styles[status],
   ]}
 >

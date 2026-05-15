@@ -1,13 +1,19 @@
 ---
 const year = new Date().getFullYear();
 ---
-<footer class="border-t border-[var(--color-border)] mt-16">
-  <div class="mx-auto max-w-3xl px-5 py-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-sm text-[var(--color-fg-muted)]">
-    <div>&copy; {year} Routiq. All rights reserved.</div>
-    <div class="flex items-center gap-5">
+<footer class="border-t border-[var(--color-border-soft)] mt-20 bg-[var(--color-cream)]">
+  <div class="mx-auto max-w-5xl px-5 sm:px-8 py-10 flex flex-col sm:flex-row items-start sm:items-end justify-between gap-5 text-sm">
+    <div>
+      <p class="display-italic text-2xl text-[var(--color-fg)]">routiq.</p>
+      <p class="mt-2 text-[var(--color-fg-muted)] max-w-sm leading-relaxed">
+        Every patient has a pattern. We find it.
+      </p>
+    </div>
+    <div class="flex flex-wrap items-center gap-x-6 gap-y-2 text-[var(--color-fg-muted)]">
       <a href="/feed.xml" class="hover:text-[var(--color-fg)] transition-colors">RSS</a>
       <a href="https://github.com/DPWelsh/routiq-changelog" class="hover:text-[var(--color-fg)] transition-colors">GitHub</a>
       <a href="https://routiq.ai" class="hover:text-[var(--color-fg)] transition-colors">routiq.ai</a>
+      <span class="text-[var(--color-fg-subtle)]">© {year}</span>
     </div>
   </div>
 </footer>

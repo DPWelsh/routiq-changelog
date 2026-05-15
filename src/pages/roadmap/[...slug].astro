@@ -5,7 +5,7 @@ import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
   const entries = await getCollection('roadmap');
-  return entries.map(entry => ({
+  return entries.map((entry) => ({
     params: { slug: entry.id },
     props: { entry },
   }));
@@ -22,22 +22,26 @@ const formatDate = (date: Date) =>
   description={entry.data.summary}
   ogImage={`/og/roadmap/${entry.id}.png`}
 >
-  <a href="/roadmap" class="text-sm text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] transition-colors">
-    &larr; Roadmap
+  <a
+    href="/roadmap"
+    class="inline-flex items-center text-sm text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] transition-colors mb-10"
+  >
+    <span aria-hidden="true" class="mr-1.5">&larr;</span>
+    Roadmap
   </a>
 
-  <article class="mt-6">
-    <header class="mb-8">
-      <div class="flex flex-wrap items-center gap-3">
+  <article>
+    <header class="mb-12 pb-10 border-b border-[var(--color-border)]">
+      <div class="flex flex-wrap items-center gap-3 mb-4">
         <StatusBadge status={entry.data.status} />
         <span class="text-xs text-[var(--color-fg-subtle)]">
           Updated {formatDate(entry.data.updated)}
         </span>
       </div>
-      <h1 class="display mt-4 text-4xl sm:text-5xl">
+      <h1 class="display text-[clamp(2rem,7.5vw,3.75rem)] leading-[1.1] sm:leading-[1.05] tracking-tight">
         {entry.data.title}
       </h1>
-      <p class="mt-3 text-lg text-[var(--color-fg-muted)] leading-relaxed">
+      <p class="mt-6 text-lg sm:text-xl text-[var(--color-fg-muted)] leading-relaxed max-w-2xl">
         {entry.data.summary}
       </p>
     </header>

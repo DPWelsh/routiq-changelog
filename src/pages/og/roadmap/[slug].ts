@@ -5,46 +5,69 @@ const entries = await getCollection('roadmap');
 const pages = Object.fromEntries(entries.map(({ id, data }) => [id, data]));
 
 const RGB = {
-  core: [26, 28, 18] as [number, number, number],
-  cloud: [237, 237, 235] as [number, number, number],
-  cloudDim: [168, 169, 160] as [number, number, number],
+  cream: [245, 240, 235] as [number, number, number],
+  creamDim: [237, 230, 221] as [number, number, number],
+  stone: [217, 208, 194] as [number, number, number],
+  blackberry: [26, 28, 18] as [number, number, number],
+  blackberrySoft: [110, 101, 87] as [number, number, number],
   clay: [201, 139, 122] as [number, number, number],
-  prompt: [123, 162, 224] as [number, number, number],
+  clayDeep: [168, 107, 90] as [number, number, number],
 };
 
 const STATUS_LABEL: Record<string, string> = {
   now: 'In progress',
-  next: 'Next',
-  later: 'Later',
+  next: 'On deck',
+  later: 'Planned',
   shipped: 'Shipped',
+};
+
+const STATUS_BG: Record<string, [number, number, number]> = {
+  now: RGB.cream,
+  next: RGB.creamDim,
+  later: RGB.stone,
+  shipped: RGB.blackberry,
 };
 
 const STATUS_ACCENT: Record<string, [number, number, number]> = {
   now: RGB.clay,
-  next: RGB.prompt,
-  later: RGB.cloudDim,
-  shipped: RGB.prompt,
+  next: RGB.clayDeep,
+  later: RGB.blackberry,
+  shipped: RGB.clay,
+};
+
+const STATUS_TEXT: Record<string, [number, number, number]> = {
+  now: RGB.blackberry,
+  next: RGB.blackberry,
+  later: RGB.blackberry,
+  shipped: RGB.cream,
+};
+
+const STATUS_DESC: Record<string, [number, number, number]> = {
+  now: RGB.blackberrySoft,
+  next: RGB.blackberrySoft,
+  later: RGB.blackberrySoft,
+  shipped: [156, 148, 133],
 };
 
 export const { getStaticPaths, GET } = await OGImageRoute({
-  pages,
   param: 'slug',
+  pages,
   getImageOptions: (_path: string, page: any) => ({
     title: page.title,
     description: `routiq.  /  roadmap  ·  ${STATUS_LABEL[page.status] ?? page.status}`,
-    bgGradient: [RGB.core],
-    border: { color: STATUS_ACCENT[page.status] ?? RGB.clay, width: 8, side: 'inline-start' },
+    bgGradient: [STATUS_BG[page.status] ?? RGB.cream],
+    border: { color: STATUS_ACCENT[page.status] ?? RGB.clay, width: 10, side: 'inline-start' },
     padding: 80,
     font: {
       title: {
-        color: RGB.cloud,
+        color: STATUS_TEXT[page.status] ?? RGB.blackberry,
         weight: 'Black',
         size: 64,
         lineHeight: 1.1,
-        families: ['Inter'],
+        families: ['Playfair Display'],
       },
       description: {
-        color: RGB.cloudDim,
+        color: STATUS_DESC[page.status] ?? RGB.blackberrySoft,
         weight: 'Normal',
         size: 26,
         lineHeight: 1.4,
@@ -52,7 +75,7 @@ export const { getStaticPaths, GET } = await OGImageRoute({
       },
     },
     fonts: [
-      'https://api.fontsource.org/v1/fonts/inter/latin-900-normal.ttf',
+      'https://api.fontsource.org/v1/fonts/playfair-display/latin-900-normal.ttf',
       'https://api.fontsource.org/v1/fonts/inter/latin-400-normal.ttf',
     ],
   }),

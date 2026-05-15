@@ -8,9 +8,16 @@ interface Props {
   description?: string;
   canonical?: string;
   ogImage?: string;
+  fullBleed?: boolean;
 }
 
-const { title, description = 'What we shipped and what we’re building next at Routiq.', canonical, ogImage } = Astro.props;
+const {
+  title,
+  description = 'What we shipped and what we’re building next at Routiq.',
+  canonical,
+  ogImage,
+  fullBleed = false,
+} = Astro.props;
 const siteName = 'Routiq Changelog';
 const fullTitle = title === siteName ? title : `${title} — ${siteName}`;
 const canonicalUrl = canonical ?? new URL(Astro.url.pathname, Astro.site).toString();
@@ -22,7 +29,7 @@ const ogImageUrl = new URL(ogImage ?? '/og/changelog/2026-05-15-hello.png', Astr
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
-    <meta name="theme-color" content="#1a1c12" />
+    <meta name="theme-color" content="#F5F0EB" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
@@ -37,6 +44,12 @@ const ogImageUrl = new URL(ogImage ?? '/og/changelog/2026-05-15-hello.png', Astr
 
     <link rel="preconnect" href="https://rsms.me/" />
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,900;1,400;1,700&display=swap"
+    />
 
     <meta property="og:type" content="website" />
     <meta property="og:title" content={fullTitle} />
@@ -53,9 +66,15 @@ const ogImageUrl = new URL(ogImage ?? '/og/changelog/2026-05-15-hello.png', Astr
   </head>
   <body>
     <Header />
-    <main class="mx-auto max-w-3xl px-5 py-10 sm:py-14">
-      <slot />
-    </main>
+    {fullBleed ? (
+      <main>
+        <slot />
+      </main>
+    ) : (
+      <main class="mx-auto max-w-3xl px-5 py-12 sm:py-16">
+        <slot />
+      </main>
+    )}
     <Footer />
   </body>
 </html>

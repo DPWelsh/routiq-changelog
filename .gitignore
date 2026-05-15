@@ -25,3 +25,16 @@ pnpm-debug.log*
 
 # vercel
 .vercel
+
+# Brand assets — DO NOT commit to public repo.
+# Confidential strategy PDF + licensed fonts (Raptor V3 Black, Acid Grotesk
+# Light) must not be redistributed. Approved logo SVGs + favicon set live
+# directly in public/ (e.g. routiq-wordmark-blackberry.svg) — those are fine.
+brand package/
+**/brand package/
+**/Routiq_Brand_Strategy.pdf
+**/routiq_brand*.pdf
+**/routiq_brand_guidelines*.pdf
+**/acid-grotesk*
+**/RaptorV3*
+**/Raptor*.otf

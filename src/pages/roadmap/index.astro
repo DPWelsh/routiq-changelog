@@ -186,10 +186,10 @@ const totalShipped = grouped.find((g) => g.status === 'shipped')?.items.length ?
             ))}
           </ol>
 
-          {/* Big phase anchor at bottom — brand-book style */}
-          <div class="mt-20 sm:mt-28 select-none pointer-events-none">
+          {/* Big phase anchor at bottom — brand-book style, never wraps */}
+          <div class="mt-20 sm:mt-28 select-none pointer-events-none overflow-hidden">
             <p class:list={[
-              "display text-[clamp(3.5rem,18vw,14rem)] leading-[0.85] tracking-tighter opacity-[0.10] break-all",
+              "display text-[clamp(2.75rem,15vw,10rem)] leading-[0.95] tracking-tight opacity-[0.10] whitespace-nowrap",
               spreadMeta[status].fg,
             ]}>
               {spreadMeta[status].anchor}<span class:list={["display-italic", spreadMeta[status].accentText]} style="opacity: 1;">.</span>

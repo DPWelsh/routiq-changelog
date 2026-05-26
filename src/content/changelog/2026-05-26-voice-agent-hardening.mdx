@@ -1,0 +1,75 @@
+---
+title: "Thirty hardening passes on the voice agent"
+date: 2026-05-26
+category: improvement
+summary: "Two weeks of focused work on the voice agent — booking determinism, slot confirmation, pricing grounding, callback handoff, complaint routing, reschedule edge cases, and a long tail of small fixes from real call audits. The voice agent now matches the SMS agent for production-readiness."
+---
+
+For a while, the voice agent was the more impressive Routiq surface — and the riskier one. Voice doesn't give you a backspace key. There's no edit button after Robyn says the wrong price. The patient hears what she says, and reacts to it, in the same second.
+
+Over the past two weeks we ran a tight loop of *audit a real call → identify the failure mode → fix it → ship → audit the next one.* The voice agent now matches the SMS agent for production-readiness. Here's what changed.
+
+## Bookings now confirm before they write
+
+The biggest behavioural shift. Robyn used to occasionally write a booking the moment a slot was proposed, before the patient had said *"yes."* Now confirmation is deterministic — the booking only writes after an explicit acceptance, and the acceptance is logged with the exact words the patient used.
+
+Two related fixes for new patients specifically: confirmed new-patient bookings now follow a deterministic path (no more *"did she book me or didn't she?"* ambiguity), and post-cancellation wrap-up no longer skips the *"would you like to rebook?"* offer.
+
+## Pricing is grounded — always
+
+Voice pricing answers now pull from clinic knowledge rather than the model's general knowledge. If your clinic's pricing isn't in the system, Robyn says so instead of guessing. If it is, she quotes from it.
+
+Two pricing behaviours also got polished:
+
+- **"Keep the existing price"** — when a patient asks if their previous price still applies, Robyn checks the actual record rather than asserting.
+- **Billing-code language stays conditional.** If your clinic uses Medicare item numbers in conversation, Robyn does too. If you don't, she doesn't drop *"81000"* into a polite reception call.
+
+## Slot search, simplified
+
+Voice availability had a habit of checking the same slot twice — once for the patient, once again *"just to be sure"* — adding seconds to the call. That's gone. Robyn checks once, caches the result for the duration of the conversation, and answers from cache for follow-up clarifications.
+
+Other slot fixes:
+
+- **Earlier-date reschedule.** *"Can you move me to this Thursday instead?"* now works without Robyn looping into the original date again.
+- **Pending reschedule slot choices.** When she's offered two options and the patient is mid-decision, an interruption no longer resets the pending choice.
+- **Abandoned reschedule.** If the patient changes their mind partway through a reschedule, the original booking stays intact.
+- **Post-tool waits are capped.** Long tool calls used to cause noticeable silences; now Robyn fills the gap with *"one moment"* if a call exceeds 800ms.
+
+## Callback handoff: a real protocol
+
+Some calls aren't bookings. *"Can the practice manager call me back about my invoice?"* used to fall through to *"sure, I'll let them know"* without much structure. Now there's a proper handoff protocol:
+
+- **Capture the reason** for the callback before agreeing to anything.
+- **Capture the preferred window** (mornings, after 5pm, etc).
+- **Ask for the handoff message** before escalating — so reception sees the context, not just the request.
+- **Confirm the callback name and number** even when the caller ID is known. Caller IDs are often the receptionist's mobile, not the patient's.
+
+## Complaint routing, hardened from audit
+
+We audit a sample of voice calls weekly. Complaints — *"my last appointment ran 40 minutes late"*, *"the practitioner cancelled twice"* — used to occasionally route to booking flows instead of escalation. Now there's a clear complaint classifier that runs early in the conversation and routes to escalation immediately. The booking flow doesn't see the call at all.
+
+ModPod-specific learning: practitioner seniority questions (*"is she the senior podiatrist?"*) now route to a knowledge lookup instead of being treated as a clarification question.
+
+## Identity, names, and the quiet wins
+
+A long tail of small fixes from real call audits:
+
+- **Voice booking identity** got more robust against phonetically similar names (Sara/Sarah, Lee/Leigh) — Robyn now spells back when there's ambiguity.
+- **Name capture flows** handle accented spelling and hyphenated surnames properly.
+- **Appointment type confirmation** is now grounded: Robyn confirms the appointment type before checking availability, not after, so the slots she offers are the right kind.
+- **Booking status replies** include the appointment type by default. No more *"you're booked"* with no detail.
+- **Voice barge-in** (the ability for a patient to interrupt mid-sentence) is properly handled — Robyn stops cleanly, listens, and resumes the right thread.
+
+## What this looks like in aggregate
+
+We track three numbers per clinic on voice: booking accuracy (did she book the right person into the right slot?), escalation appropriateness (did she escalate when she should and not when she shouldn't?), and patient satisfaction (do they sound annoyed at the end?). Over the past two weeks all three moved in the right direction:
+
+- Booking accuracy is up from roughly 92% to consistently above 98% across the active voice clinics.
+- Mis-escalations (calls escalated to a human that didn't need to be) dropped by about a third.
+- The "annoyed patient" rate, judged manually on a weekly audit sample, is at its lowest since voice launched.
+
+## What didn't get fixed yet
+
+For honesty: timezone arithmetic on voice is still our weakest spot. Robyn handles Sydney-only fine, but international callers (especially Bali, where one of our clinics has expats) still occasionally get the wrong day. That's the next focused push.
+
+If you've been on a Routiq voice call recently and noticed something off — we want to hear it. Every fix above started as one real call audit. The bar continues to be: it works for one clinic owner's actual patient, on their actual line, on the call we just listened to together.

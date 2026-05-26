@@ -1,0 +1,51 @@
+---
+title: "You can now watch a Routiq call happen, live"
+date: 2026-05-24
+category: feature
+summary: "The calls page now shows what Robyn is doing in the middle of an active call — the state path she's walking, the patient she's matched to, timing gaps between turns, and provider failures when something goes sideways. The reception desk's missing window."
+---
+
+When Routiq takes a call for a clinic, three things happen at once. Robyn talks. Twilio routes audio. The PMS gets read and written. Until this week, what a clinic owner saw on the calls page was *"call in progress"* — and then, two minutes later, a transcript.
+
+That's not enough when you're operating a clinic. The receptionist sitting next to you knows, by glance, what call you're on, who it is, what you're searching for, and whether something's gone wrong. Routiq did all of those things internally; it just didn't show them. Now it does.
+
+## What you see now
+
+Open the calls page during a live call and you get four new things:
+
+**State path.** A breadcrumb of where Robyn is in the conversation — *Greeting → Intent capture → Patient lookup → Slot search → Confirmation.* Updates live as the call moves. If she's stuck somewhere, you see it. If she's already at confirmation, you can relax.
+
+**Patient details.** The patient she's matched to, pulled from the PMS in real time. Name, last visit, last practitioner, future bookings. If she's matched the wrong patient — same first name, different person — you see it before she writes a booking.
+
+**Timing gaps.** The pause between each turn of the transcript. Long gaps are usually one of two things: the patient thinking, or a tool call taking longer than it should. Either way, surfacing them lets you understand the rhythm of the call without guessing.
+
+**Provider failures.** When Twilio drops audio, when the PMS API returns 500, when a tool call times out — those now show up as inline events on the transcript rather than silently degrading the call quality. Failed turns are marked. You can see the retry, or the fallback Robyn took.
+
+## The processing state, decoded
+
+Two related fixes shipped under the hood:
+
+- **Inbound call classification was wrong sometimes.** Voicemail drops, hang-ups, missed-then-callback cases were being miscategorised on the calls page. Fixed — the status now matches what actually happened.
+- **The "processing" type was unclear.** Some calls sat in *processing* longer than they should have, because the transcript was generated quickly but the post-call analysis (intent labelling, action summary) was slower. The page now distinguishes between *transcript pending* and *analysis pending*, so you know what you're waiting for.
+
+## Why this changes things
+
+The pitch we've always made to clinics is: *Robyn frees up the receptionist's time.* The unspoken part is that for the trade to be fair, the clinic has to trust that what's happening on the call is what should be happening. Without visibility, that trust is a leap. With it, it's a glance.
+
+Three immediate uses:
+
+**Customer ops gets a real surface.** Our own team uses this dashboard to triage incidents in real time — *which clinic? which call? where did it break?* — instead of digging through Langfuse traces after the fact.
+
+**Clinic owners can supervise the early weeks.** During a new clinic's pilot, the owner can pop into the calls page mid-call to confirm Robyn is handling things the way they'd want. By week two, they've stopped checking. That's the journey we're optimising for.
+
+**Edge cases come back to us as data, not anecdote.** When something goes wrong on a call, the screenshot now contains everything we need to reproduce it. No more *"can you check that call from yesterday?"* with no other context.
+
+## Where this goes next
+
+The calls page is becoming the primary operational surface for voice. Coming up:
+
+- **Live audio playback.** Listen in on an active call from the dashboard. (Big privacy implications — likely behind a per-clinic toggle.)
+- **Intervene mid-call.** When the state path goes off the rails, a one-click *"escalate to me"* that warm-transfers the call to a real person.
+- **Per-clinic call health scores.** A summary of provider failure rate, average call duration, escalation rate — surfaced as a weekly digest so you don't have to monitor manually.
+
+If you've been on a call this week and looked over at your phone wondering what Robyn was doing — that's exactly the question this page now answers.

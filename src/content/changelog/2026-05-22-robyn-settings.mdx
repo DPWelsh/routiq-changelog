@@ -1,0 +1,57 @@
+---
+title: "Configure Robyn yourself — knowledge, confirmation, location, voice"
+date: 2026-05-22
+category: feature
+summary: "A new settings surface where clinic owners shape how Robyn answers. Knowledge readiness cards show what's wired up and what's missing. Confirmation, location, voice greeting, booking instructions — all editable without a support ticket."
+---
+
+For the first few months of Routiq, the answer to *"can Robyn handle X for our clinic?"* was always the same: *"yes, we'll configure it."* That meant a Slack message, a calendar invite, a back-and-forth, and a small team somewhere editing a config file you couldn't see.
+
+That's the right model when you're building. It's the wrong model when you're operating. This week we shipped the surface that closes the loop: **clinic owners can now configure Robyn directly — and see, at a glance, what's wired up and what isn't.**
+
+## Knowledge readiness cards
+
+The biggest change is on the readiness page. Robyn's knowledge — the data she pulls from when answering a patient — is now broken into discrete cards: *Services & pricing*, *Practitioner profiles*, *Locations*, *Booking rules*, *Cancellation policy*, *Pre-appointment instructions*, and so on.
+
+Each card shows you:
+
+- Whether it's connected (sourced from your PMS, sourced from a doc, or empty)
+- When it was last updated
+- A preview of what Robyn knows right now
+- A direct edit path
+
+**The cards are clickable.** Tap *Services & pricing* and you're in the editor. No second navigation, no hunting for the right settings page. The readiness page itself becomes your work queue: anything red or amber is something Robyn doesn't know yet — and a click away from being something she does.
+
+## Confirmation & location settings
+
+Two new settings groups that used to require a ticket:
+
+**Confirmation behaviour.** Whether Robyn confirms bookings via SMS, voice callback, or both. The exact wording of the confirmation message. Whether she sends a confirmation immediately or batches them with a same-day reminder. Whether she chases unconfirmed bookings the morning of.
+
+**Multi-location.** For clinics with more than one site, you can now declare each location, set its hours, name the practitioners who work there, and write a per-location greeting. Robyn picks the right location from caller cues (number called, postcode mentioned, practitioner asked for) and writes the booking into the correct calendar — without you maintaining a lookup table.
+
+## Booking instructions field
+
+A free-text field for the things that don't fit anywhere else. *"Always ask if the patient has been seen at any of our sites before, not just this one."* *"For initial podiatry consults, mention the 45-minute duration explicitly."* *"Never quote bulk-billing — we don't offer it."*
+
+These are the clinic-specific rules that used to live in a Notion doc that nobody read. Now they're in a single field that Robyn reads every time she's about to write a booking. Edit it once, applies everywhere.
+
+## Voice greeting — unified
+
+Voice and SMS greetings used to be configured in separate places, which meant they could drift. We've unified them: one greeting setting, used for both, with a single override field for the cases where you genuinely want them to differ. Most clinics don't.
+
+We also kept the **voice dialogue flow editor** available behind an advanced toggle for the handful of clinics that need to script specific scenarios (intake triage, multi-step screening). It's there, but it's no longer the default starting point.
+
+## Why this matters
+
+The honest story is that configuration was our bottleneck — not the AI. The AI was capable; we just couldn't wire it up fast enough for every new clinic without burning support hours. Putting these surfaces in the customer's hands means:
+
+- **Onboarding compresses.** A clinic that wants to go live can now wire up half the readiness checklist themselves while we work on the half that needs PMS integration.
+- **The agent stays accurate as the clinic changes.** New practitioner? New service? New location? Edit a card. No ticket, no waiting.
+- **The readiness page becomes the source of truth.** What Robyn says is what's in the cards. If something's wrong in production, the readiness page tells you exactly where to fix it.
+
+## What's next
+
+The cards expose what Robyn *knows*. The next layer is what Robyn *decides* — a transparent rules editor for things like triage routing ("podiatry with diabetes mention → flag for review"), escalation paths, and after-hours behaviour. That goes through the same readiness card pattern: visible, editable, owned by the clinic.
+
+If you've been waiting on us to wire up something specific for your practice — check the readiness page first. There's a good chance the field you wanted is now sitting there with your name on it.

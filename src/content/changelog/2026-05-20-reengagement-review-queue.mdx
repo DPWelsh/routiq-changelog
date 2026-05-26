@@ -1,0 +1,51 @@
+---
+title: "Review every reactivation message before it sends"
+date: 2026-05-20
+category: feature
+summary: "A new review queue puts a human in the loop between Routiq drafting reactivation messages and any of them going out — bulk draft, edit, approve. The right amount of trust for the most sensitive thing the bot does."
+---
+
+The single highest-stakes thing Routiq does is the unsolicited reactivation message. Booking is asked-for. Cancellations are asked-for. *"Hi Sarah, it's been 14 weeks — Mark has Thursday 6pm free if you'd like to come in"* — that goes out cold, lands in the patient's phone, and represents your clinic. If it's slightly off, you don't get a tactful reply; you get unsubscribes.
+
+For months our position on this was conservative: Routiq drafted, the clinic owner manually copy-pasted into Cliniko or sent one at a time from the inbox. It worked. It also capped reactivation at whatever a busy front-desk could process in a week — usually a few dozen, when the actual opportunity was hundreds.
+
+This week we shipped the missing piece: **a reengagement review queue.**
+
+## What it does
+
+1. Routiq scores your lapsed patients and **bulk-drafts personalised reactivation messages** for the ones most likely to come back — drawing on visit history, last service, time-since-last-visit, and the patient's own past responses.
+2. The drafts land in a **review queue** in the app. Each one shows the patient, the suggested message, the reasoning behind the timing, and the channel (SMS, WhatsApp, or both).
+3. You **read, edit, or skip** any draft. Bulk-approve the ones that read right. Edit the tone on one. Skip another entirely.
+4. Approved messages go out on schedule. Skipped ones stay skipped. Routiq learns from what you keep and what you cut.
+
+You stay in the loop without being the bottleneck. The job changes from *"write 60 personalised messages"* to *"read 60 personalised messages and approve the right ones."*
+
+## Why the queue, not just an autosend toggle
+
+Two reasons.
+
+**The first is trust.** Even with the best models, the drafting AI doesn't know everything about a specific patient — that this person is going through a divorce, that the husband died last month, that the doctor told them not to book until their next scan. A clinic owner does. The review queue is the seam where local knowledge corrects general intelligence.
+
+**The second is bidirectional learning.** When you edit a draft, Routiq sees what you changed and why. When you skip one, it sees what made you skip. Those edits become a private taste profile — *this clinic prefers shorter SMS, never names a price, always opens with the practitioner's first name.* The drafts get better. The next batch needs less editing. The bottleneck shrinks.
+
+## The bulk-drafting under the hood
+
+Three improvements to the drafting itself shipped alongside the review queue:
+
+- **Capacity-aware drafting.** The queue now respects your weekly send capacity. If you can comfortably review 50 drafts but not 500, the scoring layer picks the 50 patients most likely to convert per dollar of clinic-owner attention — not just the top 500.
+- **Smarter scoring.** Lapsed-patient scoring now incorporates last visit cadence, average visit value, and prior reactivation response history. The patient who responded to your last campaign 18 months ago ranks higher than the one who never has.
+- **Better selection.** The queue avoids contacting patients you've already reached out to recently, patients who've opted out, and patients with active future bookings — without you having to remember those exclusions.
+
+## Today's reactivations, at a glance
+
+The home page now surfaces **today's reengagement actions** as a tile — drafts ready to review, sends scheduled, replies that need attention. The pipeline that used to live in three browser tabs now lives in one card.
+
+## Where this is going
+
+The review queue is the foundation. The next things on the bench:
+
+- **Per-segment review** — review all "Pilates lapsed 12+ weeks" patients as a single batch with consistent tone, instead of one at a time.
+- **A/B testing with grading** — when you edit a draft, Routiq compares your version against the original on the next batch, and shows you which performs better.
+- **Reply-aware follow-ups** — if a patient replies *"maybe next month"*, Routiq drafts the follow-up for next month and queues it for your review.
+
+If you're already reactivating manually, this is the unlock. If you've been holding back on bulk reactivation because the trust wasn't there yet — that's exactly the wall this is built to clear.

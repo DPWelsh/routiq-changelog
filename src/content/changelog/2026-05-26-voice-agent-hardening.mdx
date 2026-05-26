@@ -3,6 +3,15 @@ title: "Thirty hardening passes on the voice agent"
 date: 2026-05-26
 category: improvement
 summary: "Two weeks of focused work on the voice agent — booking determinism, slot confirmation, pricing grounding, callback handoff, complaint routing, reschedule edge cases, and a long tail of small fixes from real call audits. The voice agent now matches the SMS agent for production-readiness."
+stats:
+  - value: "30+"
+    label: "fixes shipped"
+  - value: "92 → 98%"
+    label: "booking accuracy"
+  - value: "−33%"
+    label: "mis-escalations"
+  - value: "1"
+    label: "tool-call cache per call"
 ---
 
 For a while, the voice agent was the more impressive Routiq surface — and the riskier one. Voice doesn't give you a backspace key. There's no edit button after Robyn says the wrong price. The patient hears what she says, and reacts to it, in the same second.

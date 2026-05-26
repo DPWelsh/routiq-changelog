@@ -8,6 +8,15 @@ const changelog = defineCollection({
     date: z.coerce.date(),
     category: z.enum(['feature', 'improvement', 'fix', 'docs', 'announcement']),
     summary: z.string().optional(),
+    stats: z
+      .array(
+        z.object({
+          value: z.string(),
+          label: z.string(),
+        })
+      )
+      .max(4)
+      .optional(),
     draft: z.boolean().default(false),
   }),
 });
